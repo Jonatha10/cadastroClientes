@@ -1,17 +1,23 @@
-import conn.ConnectionFactory;
+import classe.Clientes;
+import db.ClientesDB;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Testeconexao {
     public static void main(String[] args) throws SQLException {
-        Connection conexao = ConnectionFactory.getConexao();
 
-        try {
-            System.out.println("funciona");
-            conexao.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        deletar();
+
     }
+    public static void inserir() throws SQLException {
+        Clientes clientes = new Clientes("joao","joao123@gmail.com","123.456.789-00","(71) 91234-5678");
+        ClientesDB clientesDB = new ClientesDB();
+        ClientesDB.save(clientes);
+    }
+    public static void deletar() throws SQLException {
+        Clientes clientes = new Clientes();
+        clientes.setId(2);
+        ClientesDB.delete(clientes);
+    }
+
 }

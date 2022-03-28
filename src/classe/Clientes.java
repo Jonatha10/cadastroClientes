@@ -11,12 +11,21 @@ public class Clientes {
 
     }
 
-    public Clientes(String nome, String email, String cpf, String telefone) {
+    public Clientes(int id, String nome, String email, String cpf, String telefone) {
+        this.id = id;
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
         this.telefone = telefone;
     }
+
+    public Clientes( String nome, String email, String cpf, String telefone) {
+        this.nome = nome;
+        this.email = email;
+        this.cpf = cpf;
+        this.telefone = telefone;
+    }
+
 
     public Integer getId() {
         return id;

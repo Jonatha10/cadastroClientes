@@ -4,8 +4,11 @@ import classe.Clientes;
 import conn.ConnectionFactory;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientesDB {
     public static void save(Clientes clientes) throws SQLException {
@@ -44,8 +47,7 @@ public class ClientesDB {
             System.out.println("Não foi possivel atualizar os dados");
             return;
         } else {
-            String sql =
-                    "UPDATE `estudos`.`Clientes` SET `nome` = '"+ clientes.getNome()+"', `email` = '"+clientes.getEmail()+ "', `cpf` = '"+ clientes.getCpf()+"' ,`telefone` = '"+clientes.getTelefone()+"'  WHERE (`id` = '"+ clientes.getId()+"');";
+            String sql = "UPDATE `estudos`.`Clientes` SET `nome` = '" + clientes.getNome() + "', `email` = '" + clientes.getEmail() + "', `cpf` = '" + clientes.getCpf() + "' ,`telefone` = '" + clientes.getTelefone() + "'  WHERE (`id` = '" + clientes.getId() + "');";
 
             Connection conn = ConnectionFactory.getConexao();
             try {
@@ -58,6 +60,46 @@ public class ClientesDB {
             }
         }
     }
+
+    public static List<Clientes> selectAll() throws SQLException {
+        String sql = "SELECT * FROM estudos.Clientes";
+        Connection conn = ConnectionFactory.getConexao();
+        List<Clientes> clientesList = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()){
+                clientesList.add(new Clientes(resultSet.getInt("id"),resultSet.getString("nome"),resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
+
+            }
+            ConnectionFactory.Close(conn, stmt, resultSet);
+            return clientesList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static List<Clientes> searchByName(String nome) throws SQLException {
+        String sql = "SELECT * FROM estudos.Clientes where nome like '%"+nome+"%'";
+        Connection conn = ConnectionFactory.getConexao();
+        List<Clientes> clientesList = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()){
+                clientesList.add(new Clientes(resultSet.getInt("id"),resultSet.getString("nome"),resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
+
+            }
+            ConnectionFactory.Close(conn, stmt, resultSet);
+            return clientesList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
 }

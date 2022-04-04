@@ -26,6 +26,16 @@ public class Clientes {
         this.telefone = telefone;
     }
 
+    @Override
+    public String toString() {
+        return "Clientes{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", telefone='" + telefone + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;

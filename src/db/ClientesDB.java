@@ -3,10 +3,7 @@ package db;
 import classe.Clientes;
 import conn.ConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +65,8 @@ public class ClientesDB {
         try {
             Statement stmt = conn.createStatement();
             ResultSet resultSet = stmt.executeQuery(sql);
-            while (resultSet.next()){
-                clientesList.add(new Clientes(resultSet.getInt("id"),resultSet.getString("nome"),resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
+            while (resultSet.next()) {
+                clientesList.add(new Clientes(resultSet.getInt("id"), resultSet.getString("nome"), resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
 
             }
             ConnectionFactory.Close(conn, stmt, resultSet);
@@ -82,14 +79,14 @@ public class ClientesDB {
 
 
     public static List<Clientes> searchByName(String nome) throws SQLException {
-        String sql = "SELECT * FROM estudos.Clientes where nome like '%"+nome+"%'";
+        String sql = "SELECT * FROM estudos.Clientes where nome like '%" + nome + "%'";
         Connection conn = ConnectionFactory.getConexao();
         List<Clientes> clientesList = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet resultSet = stmt.executeQuery(sql);
-            while (resultSet.next()){
-                clientesList.add(new Clientes(resultSet.getInt("id"),resultSet.getString("nome"),resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
+            while (resultSet.next()) {
+                clientesList.add(new Clientes(resultSet.getInt("id"), resultSet.getString("nome"), resultSet.getString("email"), resultSet.getString("cpf"), resultSet.getString("telefone")));
 
             }
             ConnectionFactory.Close(conn, stmt, resultSet);
@@ -100,6 +97,52 @@ public class ClientesDB {
         return null;
     }
 
+    public static void selectMetaData() throws SQLException {
+        String sql = "Select * from estudos.Clientes";
+        Connection conn = ConnectionFactory.getConexao();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery(sql);
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            resultSet.next();
+            int qtdColuna = resultSetMetaData.getColumnCount();
+            System.out.println("Quantidade de colunas: " + qtdColuna);
+            for (int i = 1; i <= qtdColuna; i++) {
+                System.out.println("Tabela: " + resultSetMetaData.getTableName(i));
+                System.out.println("Nome coluna: " + resultSetMetaData.getColumnName(i));
+                System.out.println("Tamanho coluna: " + resultSetMetaData.getColumnDisplaySize(i));
+            }
+            ConnectionFactory.Close(conn, stmt, resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-
+    public static void checkDriverStatus() throws SQLException {
+        Connection conn = ConnectionFactory.getConexao();
+        try {
+            DatabaseMetaData databaseMetaData = conn.getMetaData();
+            if (databaseMetaData.supportsResultSetType(ResultSet.TYPE_FORWARD_ONLY)) {
+                System.out.println("Suporta TYPE_FORWARD_ONLY");
+                if (databaseMetaData.supportsResultSetConcurrency(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)) {
+                    System.out.println(" e também suporta CONCUR_UPDATABLE");
+                }
+            }
+            if (databaseMetaData.supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE)) {
+                System.out.println("Suporta TYPE_SCROLL_INSENSITIVE");
+                if (databaseMetaData.supportsResultSetConcurrency(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                    System.out.println(" e também suporta CONCUR_UPDATABLE");
+                }
+            }
+            if (databaseMetaData.supportsResultSetType(ResultSet.TYPE_SCROLL_SENSITIVE)) {
+                System.out.println("Suporta TYPE_SCROLL_SENSITIVE");
+                if (databaseMetaData.supportsResultSetConcurrency(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                    System.out.println(" e também suporta CONCUR_UPDATABLE");
+                }
+            }
+            ConnectionFactory.Close(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
